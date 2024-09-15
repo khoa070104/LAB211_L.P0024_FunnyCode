@@ -2,11 +2,9 @@ package controller;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.lang.classfile.instruction.BranchInstruction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.UUID;
 
 import models.*;
 
@@ -24,7 +22,7 @@ public class Manager {
         //  chứa file tại vị trí path
         
         try { // => try => thử làm 1 cái công việc
-            Scanner sc = new Scanner(new File("src\\data.txt"));
+            Scanner sc = new Scanner(newFile);
             while(sc.hasNextLine() == true ){ // Khi nào hàng kế tiếp != null thì t vẫn còn quét
                 String line = sc.nextLine(); // Hoàn tất đọc 1 hàng từ trong file
                 String[] listData = line.split(",");
@@ -41,7 +39,7 @@ public class Manager {
         //  chứa file tại vị trí path
         
         try { // => try => thử làm 1 cái công việc
-            Scanner sc = new Scanner(new File("src\\data.txt"));
+            Scanner sc = new Scanner(newFile);
             while(sc.hasNextLine() == true ){ // Khi nào hàng kế tiếp != null thì t vẫn còn quét
                 String line = sc.nextLine(); // Hoàn tất đọc 1 hàng từ trong file
                 String[] listData = line.split(",");
@@ -101,48 +99,49 @@ public class Manager {
         // Nhập đến khi nào mà id không tồn thì mới thôi
         
         do{
-            System.out.println("Enter ID:");
+            System.out.print("Enter ID:");
             id = sc.nextLine();
         }while (checkIdExist(id)==true);
         // Nếu name rỗng => Nhập lại
         
         do{
-            System.out.println("Enter name:");
+            System.out.print("Enter name:");
             name=sc.nextLine();
         }while(name.isEmpty());
         
         do{
-            System.out.println("Enter CategoryId:");
+            System.out.print("Enter CategoryId:");
             cateId = sc.nextLine();
         }while (checkIdFromList("Category", cateId)==false);
 
         do{
-            System.out.println("Enter BrandId:");
+            System.out.print("Enter BrandId:");
             brandId = sc.nextLine();
         }while (checkIdFromList("Brand", brandId)==false);
 
         do{
-            System.out.println("Enter Model Year:");
+            System.out.print("Enter Model Year:");
             modelYear = Integer.parseInt(sc.nextLine()); // Exception => try-catch
         }while (modelYear < 1900 || modelYear > 2100);
 
         do{
-            System.out.println("Enter List Price:");
+            System.out.print("Enter List Price:");
             listPrice = Double.parseDouble(sc.nextLine()); // Exception => try-catch
-        }while (listPrice > 0);
+        }while (listPrice < 0);
         Product p = new Product(id, name, brandId, cateId, modelYear, listPrice);
         listProduct.add(p);
+        System.out.println("Add success!");
         
     }
 
 
-    public List<Product> searchProduct(String str){
+    public List<Product> searchProduct(String name){
         List<Product> result = new ArrayList(); // Ngôi nhà tình thương
          if(listProduct.size()==0){
             return null;
          }
          for (Product tay : listProduct) {
-            if(tay.getName().contains(str)){
+            if(tay.getName().contains(name)){
                 result.add(tay);
             }
          }
@@ -161,31 +160,35 @@ public class Manager {
             // Nhập đến khi nào mà id không tồn thì mới thôi
             
             do{
-                System.out.println("Enter name:");
+                System.out.print("Enter name:");
                 name=sc.nextLine();
             }while(name.isEmpty());
             
             do{
-                System.out.println("Enter CategoryId:");
+                System.out.print("Enter CategoryId:");
                 cateId = sc.nextLine();
             }while (checkIdFromList("Category", cateId)==false);
 
             do{
-                System.out.println("Enter BrandId:");
+                System.out.print("Enter BrandId:");
                 brandId = sc.nextLine();
             }while (checkIdFromList("Brand", brandId)==false);
 
             do{
-                System.out.println("Enter Model Year:");
+                System.out.print("Enter Model Year:");
                 modelYear = Integer.parseInt(sc.nextLine()); // Exception => try-catch
             }while (modelYear < 1900 || modelYear > 2100);
 
             do{
-                System.out.println("Enter List Price:");
+                System.out.print("Enter List Price:");
                 listPrice = Double.parseDouble(sc.nextLine()); // Exception => try-catch
-            }while (listPrice > 0);
-            Product p = new Product(id, name, brandId, cateId, modelYear, listPrice);
-            pSearch = p;
+            }while (listPrice < 0);
+            pSearch.setName(name);
+            pSearch.setBrandId(brandId);
+            pSearch.setCategoryId(cateId);
+            pSearch.setModelYear(modelYear);
+            pSearch.setListPrice(listPrice);
+            System.out.println("Update success!");
         } else System.out.println("Product not exist!");
     }
 
@@ -193,6 +196,7 @@ public class Manager {
         Product p = searchProductById(id);
         if(p != null){
             listProduct.remove(p);
+            System.out.println("Delete success!");
         } else System.out.println("Product not exist!");
     }
 
@@ -216,13 +220,6 @@ public class Manager {
         }
     }
 
-    public static void main(String[] args) {
-        Manager m = new Manager();
-        m.loadBrandFromFile("D:\\Documents\\LAB\\LAB211_L.P0024_FunnyCode\\Category.txt");
-        for (Brand b : m.listBrand) {
-            System.out.println(b.toString());
-        }
-    }
 // -----------------
     // UpdateInformation => Kiểm tra xem cháu nó có tồn tài hay ko => nếu có thì mới update
 
